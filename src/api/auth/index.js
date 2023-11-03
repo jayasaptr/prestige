@@ -142,8 +142,12 @@ router.get("/verify/:email", (req, res) =>
       },
     });
     return res.redirect("https://fe-prestige.zenmultimediacorp.com/");
+<<<<<<< HEAD
   })
 );
+=======
+}));
+>>>>>>> ae191bd (fs)
 //login
 router.post("/login", (req, res) =>
   __awaiter(void 0, void 0, void 0, function* () {
@@ -277,9 +281,13 @@ router.get("/google/callback", (req, res) =>
     };
     const secret = process.env.JWT_SECRET;
     const expiresIn = 60 * 60 * 1;
+<<<<<<< HEAD
     const token = jsonwebtoken_1.default.sign(payload, secret, {
       expiresIn: expiresIn,
     });
+=======
+    const token = jsonwebtoken_1.default.sign(payload, secret, { expiresIn: expiresIn });
+>>>>>>> ae191bd (fs)
     // return res.redirect(`http://localhost:3000/auth-success?token=${token}`)
     // return res.json({
     //   data: {
@@ -302,9 +310,14 @@ router.get("/google/callback", (req, res) =>
     //   },
     //   token: token,
     // });
+<<<<<<< HEAD
     return res.redirect(
       `https://fe-prestige.zenmultimediacorp.com/?token=${token}`
     );
   })
 );
+=======
+    return res.redirect("https://fe-prestige.zenmultimediacorp.com/");
+}));
+>>>>>>> ae191bd (fs)
 module.exports = router;
