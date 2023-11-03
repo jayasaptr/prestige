@@ -220,7 +220,7 @@ router.post("/login", async (req, res) => {
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  "http://localhost:5000/api/auth/google/callback"
+  `http://${process.env.PUBLIC_IMAGE}:5000/api/auth/google/callback`
 );
 
 const scopes = [
