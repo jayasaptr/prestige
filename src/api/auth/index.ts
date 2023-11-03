@@ -114,9 +114,7 @@ router.get("/verify/:email", async (req, res) => {
     },
   });
 
-  return res.json({
-    message: `Your email has been verified`,
-  });
+  return res.redirect("https://fe-prestige.zenmultimediacorp.com/");
 });
 
 //login
@@ -279,27 +277,29 @@ router.get("/google/callback", async (req, res) => {
 
   // return res.redirect(`http://localhost:3000/auth-success?token=${token}`)
 
-  return res.json({
-    data: {
-      id: user.id,
-      profile_picture: user.profile_picture,
-      first_name: user.first_name,
-      middle_name: user.middle_name,
-      last_name: user.last_name,
-      email_customer: user.email_customer,
-      password_customer: user.password_customer,
-      emergency_contact: user.emergency_contact,
-      official_identify: user.official_identify,
-      phone_number: user.phone_number,
-      country_customer: user.country_customer,
-      address: user.address,
-      driver_license_number: user.driver_license_number,
-      expiration_date: user.expiration_date,
-      date_of_birth: user.date_of_birth,
-      status: user.status,
-    },
-    token: token,
-  });
+  // return res.json({
+  //   data: {
+  //     id: user.id,
+  //     profile_picture: user.profile_picture,
+  //     first_name: user.first_name,
+  //     middle_name: user.middle_name,
+  //     last_name: user.last_name,
+  //     email_customer: user.email_customer,
+  //     password_customer: user.password_customer,
+  //     emergency_contact: user.emergency_contact,
+  //     official_identify: user.official_identify,
+  //     phone_number: user.phone_number,
+  //     country_customer: user.country_customer,
+  //     address: user.address,
+  //     driver_license_number: user.driver_license_number,
+  //     expiration_date: user.expiration_date,
+  //     date_of_birth: user.date_of_birth,
+  //     status: user.status,
+  //   },
+  //   token: token,
+  // });
+
+  return res.redirect("https://fe-prestige.zenmultimediacorp.com/");
 });
 
 module.exports = router;
