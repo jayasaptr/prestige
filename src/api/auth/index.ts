@@ -114,7 +114,26 @@ router.get("/verify/:email", async (req, res) => {
     },
   });
 
-  return res.redirect("https://fe-prestige.zenmultimediacorp.com/");
+  const image = process.env.PUBLIC_IMAGE;
+
+  const secret = process.env.JWT_SECRET!;
+
+  const expiresIn = 60 * 60 * 1;
+
+  const payload = {
+    id: user.id,
+    firstname: user.first_name,
+    lastname: user.last_name,
+    email: user.email_customer,
+    photo: `${image}/${user.profile_picture}`,
+    isVerified: user.status,
+  };
+
+  const token = jwt.sign(payload, secret, { expiresIn: expiresIn });
+
+  return res.redirect(
+    `https://fe-prestige.zenmultimediacorp.com/?token=${token}`
+  );
 });
 
 //login
@@ -299,7 +318,9 @@ router.get("/google/callback", async (req, res) => {
   //   token: token,
   // });
 
-  return res.redirect("https://fe-prestige.zenmultimediacorp.com/");
+  return res.redirect(
+    `https://fe-prestige.zenmultimediacorp.com/?token=${token}`
+  );
 });
 
 module.exports = router;
