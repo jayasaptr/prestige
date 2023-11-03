@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon ./src/index.ts"
-  },
+    "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
+    "start": "tsc && node ./src/index.js",
+    "pm2": "tsc && pm2 start pm2.config.js"
+   },
   "keywords": [],
   "author": "",
   "license": "ISC",
