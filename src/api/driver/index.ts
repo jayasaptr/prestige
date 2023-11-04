@@ -157,9 +157,6 @@ router.get("/detail/:id", async (req, res) => {
 //update user role customer data driver
 router.patch("/update/:id", async (req, res) => {
   const { id } = req.params;
-
-  //update apa yg mau di update
-
   try {
     const driver = await prisma.customers.update({
       where: {
@@ -180,18 +177,20 @@ router.patch("/update/:id", async (req, res) => {
         country_customer: req.body.country_customer,
         official_identify: req.body.official_identify,
         status: req.body.status,
-        // car_availability: {
-        //   updateMany: {
-        //     where: {
-        //       id: Number(id),
-        //     },
-        //     data: {
-        //       primary_financial_goal_id: req.body.primary_financial_goal_id,
-        //       how_often_family_id: req.body.how_often_family_id,
-        //       how_often_car_id: req.body.how_often_car_id,
-        //     },
-        //   },
-        // },
+        car_availability: {
+          update: {
+            primary_financial_goal_id: req.body.primary_financial_goal_id,
+            how_often_family_id: req.body.how_often_family_id,
+            how_often_car_id: req.body.how_often_car_id,
+          },
+        },
+        driver_goals: {
+          update: {
+            advance_goal_id: req.body.advance_goal_id,
+            maximum_duration_id: req.body.maximum_duration_id,
+            minimum_duration_id: req.body.minimum_duration_id,
+          },
+        },
       },
     });
 
@@ -203,5 +202,85 @@ router.patch("/update/:id", async (req, res) => {
     res.status(400).json({ message: error });
   }
 });
+
+//update foto profile customer
+router.post(
+  "/update/foto/:id",
+  fileUpload("./storage/customers/"),
+  async (req, res) => {
+    const cekCustomerId = await prisma.customers.findUnique({
+      where: {
+        id: Number(req.params.id),
+      },
+    });
+    if (!cekCustomerId) {
+      return res.status(400).json({
+        message: "Customer id not found",
+      });
+    }
+    const photo = `storage/customers/${req.file?.filename}`;
+
+    try {
+      const driver = await prisma.customers.update({
+        where: {
+          id: Number(req.params.id),
+        },
+        data: {
+          profile_picture: photo,
+        },
+      });
+
+      const baseUrl = process.env.PUBLIC_IMAGE;
+      driver.profile_picture = `${baseUrl}/${driver.profile_picture}`;
+
+      res.status(200).json({
+        message: "Update data success",
+        data: driver,
+      });
+    } catch (error) {
+      res.status(400).json({ message: error });
+    }
+  }
+);
+
+//update foto driver license customer
+router.post(
+  "/update/foto/license/:id",
+  fileUpload("./storage/driver-license/"),
+  async (req, res) => {
+    const cekCustomerId = await prisma.customers.findUnique({
+      where: {
+        id: Number(req.params.id),
+      },
+    });
+    if (!cekCustomerId) {
+      return res.status(400).json({
+        message: "Customer id not found",
+      });
+    }
+    const photo = `storage/driver-license/${req.file?.filename}`;
+
+    try {
+      const driver = await prisma.customers.update({
+        where: {
+          id: Number(req.params.id),
+        },
+        data: {
+          driver_license_image: photo,
+        },
+      });
+
+      const baseUrl = process.env.PUBLIC_IMAGE;
+      driver.driver_license_image = `${baseUrl}/${driver.driver_license_image}`;
+
+      res.status(200).json({
+        message: "Update data success",
+        data: driver,
+      });
+    } catch (error) {
+      res.status(400).json({ message: error });
+    }
+  }
+);
 
 module.exports = router;

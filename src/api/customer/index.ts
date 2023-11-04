@@ -340,26 +340,75 @@ router.post("/car-availability", async (req, res) => {
     how_often_car_id,
   } = req.body;
 
-  //cek apakah user sudah pernah mengisi car availability goal
-
-  const cekCarAvailability = await prisma.car_availability.findMany({
+  //cek jika id tidak ada di table customers
+  const cekCustomerId = await prisma.customers.findUnique({
     where: {
-      customer_id: Number(customer_id),
+      id: Number(customer_id),
     },
   });
 
-  if (cekCarAvailability.length > 0) {
-    // cari id car availability goal sesuai dengan customer_id
-    const idCarAvailability = await prisma.car_availability.findFirst({
+  if (!cekCustomerId) {
+    return res.status(400).json({
+      message: "Customer id not found",
+    });
+  }
+
+  //cek jika id tidak ada di table primary_financial_goal
+  const cekPrimaryFinancialGoalId =
+    await prisma.primary_financial_goal.findUnique({
       where: {
-        customer_id: Number(customer_id),
+        id: Number(primary_financial_goal_id),
       },
     });
 
-    // update car availability goal jika sudah pernah mengisi
-    const updateCarAvailability = await prisma.car_availability.update({
+  if (!cekPrimaryFinancialGoalId) {
+    return res.status(400).json({
+      message: "Primary financial goal id not found",
+    });
+  }
+
+  //cek jika id tidak ada di table how_often_family
+
+  const cekHowOftenFamilyId = await prisma.how_often_family.findUnique({
+    where: {
+      id: Number(how_often_family_id),
+    },
+  });
+
+  if (!cekHowOftenFamilyId) {
+    return res.status(400).json({
+      message: "How often family id not found",
+    });
+  }
+
+  //cek jika id tidak ada di table how_often_car
+
+  const cekHowOftenCarId = await prisma.how_often_car.findUnique({
+    where: {
+      id: Number(how_often_car_id),
+    },
+  });
+
+  if (!cekHowOftenCarId) {
+    return res.status(400).json({
+      message: "How often car id not found",
+    });
+  }
+
+  //update jika car availability id sudah ada di table customers
+  const cekCarAvailability = await prisma.customers.findUnique({
+    where: {
+      id: Number(customer_id),
+    },
+    include: {
+      car_availability: true,
+    },
+  });
+
+  if (cekCarAvailability?.car_availability) {
+    const carAvailability = await prisma.car_availability.update({
       where: {
-        id: idCarAvailability?.id,
+        id: cekCarAvailability.car_availability.id,
       },
       data: {
         primary_financial_goal_id: Number(primary_financial_goal_id),
@@ -369,7 +418,7 @@ router.post("/car-availability", async (req, res) => {
     });
 
     return res.json({
-      message: "Car availability goal has been updated",
+      message: "Car availability has been updated",
       data: {
         customer_id: Number(customer_id),
         primary_financial_goal_id: Number(primary_financial_goal_id),
@@ -379,9 +428,14 @@ router.post("/car-availability", async (req, res) => {
     });
   }
 
+  //create car availability untuk customer id
   const carAvailability = await prisma.car_availability.create({
     data: {
-      customer_id: Number(customer_id),
+      customers: {
+        connect: {
+          id: Number(customer_id),
+        },
+      },
       primary_financial_goal_id: Number(primary_financial_goal_id),
       how_often_family_id: Number(how_often_family_id),
       how_often_car_id: Number(how_often_car_id),
@@ -389,7 +443,7 @@ router.post("/car-availability", async (req, res) => {
   });
 
   res.json({
-    message: "Car availability goal has been created",
+    message: "Car availability has been created",
     data: {
       customer_id: Number(customer_id),
       primary_financial_goal_id: Number(primary_financial_goal_id),
@@ -399,7 +453,7 @@ router.post("/car-availability", async (req, res) => {
   });
 });
 
-//post goals_user
+//Post Goal User
 router.post("/goals-user", async (req, res) => {
   const schema = Joi.object({
     customer_id: Joi.string().required(),
@@ -423,26 +477,72 @@ router.post("/goals-user", async (req, res) => {
     maximum_duration_id,
   } = req.body;
 
-  //cek apakah user sudah pernah mengisi goals_user
-
-  const cekGoalsUser = await prisma.driver_goals.findMany({
+  //cek jika id tidak ada di table customers
+  const cekCustomerId = await prisma.customers.findUnique({
     where: {
-      customer_id: Number(customer_id),
+      id: Number(customer_id),
     },
   });
 
-  if (cekGoalsUser.length > 0) {
-    // cari id goals_user sesuai dengan customer_id
-    const idGoalsUser = await prisma.driver_goals.findFirst({
-      where: {
-        customer_id: Number(customer_id),
-      },
+  if (!cekCustomerId) {
+    return res.status(400).json({
+      message: "Customer id not found",
     });
+  }
 
-    // update goals_user jika sudah pernah mengisi
-    const updateGoalsUser = await prisma.driver_goals.update({
+  //cek jika id tidak ada di table advance_goal
+  const cekAdvanceGoalId = await prisma.advance_goal.findUnique({
+    where: {
+      id: Number(advance_goal_id),
+    },
+  });
+
+  if (!cekAdvanceGoalId) {
+    return res.status(400).json({
+      message: "Advance goal id not found",
+    });
+  }
+
+  //cek jika id tidak ada di table minimum_duration
+  const cekMinimumDurationId = await prisma.minimum_duration.findUnique({
+    where: {
+      id: Number(minimum_duration_id),
+    },
+  });
+
+  if (!cekMinimumDurationId) {
+    return res.status(400).json({
+      message: "Minimum duration id not found",
+    });
+  }
+
+  //cek jika id tidak ada di table maximum_duration
+  const cekMaximumDurationId = await prisma.maximum_duration.findUnique({
+    where: {
+      id: Number(maximum_duration_id),
+    },
+  });
+
+  if (!cekMaximumDurationId) {
+    return res.status(400).json({
+      message: "Maximum duration id not found",
+    });
+  }
+
+  //update jika goal user id sudah ada di table customers
+  const cekGoalUser = await prisma.customers.findUnique({
+    where: {
+      id: Number(customer_id),
+    },
+    include: {
+      driver_goals: true,
+    },
+  });
+
+  if (cekGoalUser?.driver_goals) {
+    const goalUser = await prisma.driver_goals.update({
       where: {
-        id: idGoalsUser?.id,
+        id: cekGoalUser.driver_goals.id,
       },
       data: {
         advance_goal_id: Number(advance_goal_id),
@@ -452,7 +552,7 @@ router.post("/goals-user", async (req, res) => {
     });
 
     return res.json({
-      message: "Goals user has been updated",
+      message: "Goal user has been updated",
       data: {
         customer_id: Number(customer_id),
         advance_goal_id: Number(advance_goal_id),
@@ -462,9 +562,15 @@ router.post("/goals-user", async (req, res) => {
     });
   }
 
-  const goalsUser = await prisma.driver_goals.create({
+  //create goal user untuk customer id
+
+  const goalUser = await prisma.driver_goals.create({
     data: {
-      customer_id: Number(customer_id),
+      customers: {
+        connect: {
+          id: Number(customer_id),
+        },
+      },
       advance_goal_id: Number(advance_goal_id),
       minimum_duration_id: Number(minimum_duration_id),
       maximum_duration_id: Number(maximum_duration_id),
@@ -472,7 +578,7 @@ router.post("/goals-user", async (req, res) => {
   });
 
   res.json({
-    message: "Goals user has been created",
+    message: "Goal user has been created",
     data: {
       customer_id: Number(customer_id),
       advance_goal_id: Number(advance_goal_id),
