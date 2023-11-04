@@ -155,6 +155,53 @@ router.get("/detail/:id", async (req, res) => {
 });
 
 //update user role customer data driver
+router.patch("/update/:id", async (req, res) => {
+  const { id } = req.params;
 
+  //update apa yg mau di update
+
+  try {
+    const driver = await prisma.customers.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        first_name: req.body.first_name,
+        middle_name: req.body.middle_name,
+        last_name: req.body.last_name,
+        email_customer: req.body.email_customer,
+        driver_license_number: req.body.driver_license_number,
+        emergency_contact: req.body.emergency_contact,
+        date_of_birth: req.body.date_of_birth,
+        expiration_date: req.body.expiration_date,
+        phone_number: req.body.phone_number,
+        address: req.body.address,
+        state_customer: req.body.state_customer,
+        country_customer: req.body.country_customer,
+        official_identify: req.body.official_identify,
+        status: req.body.status,
+        // car_availability: {
+        //   updateMany: {
+        //     where: {
+        //       id: Number(id),
+        //     },
+        //     data: {
+        //       primary_financial_goal_id: req.body.primary_financial_goal_id,
+        //       how_often_family_id: req.body.how_often_family_id,
+        //       how_often_car_id: req.body.how_often_car_id,
+        //     },
+        //   },
+        // },
+      },
+    });
+
+    res.status(200).json({
+      message: "Update data success",
+      data: driver,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error });
+  }
+});
 
 module.exports = router;

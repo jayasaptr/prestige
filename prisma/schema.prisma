@@ -36,32 +36,30 @@ model cars {
 }
 
 model customers {
-  id                    Int               @id @default(autoincrement())
-  profile_picture       String?           @db.VarChar(255)
-  first_name            String            @db.VarChar(100)
-  middle_name           String?           @db.VarChar(100)
-  last_name             String?           @db.VarChar(100)
-  email_customer        String            @unique(map: "customers_email_customer_unique") @db.VarChar(100)
-  password_customer     String            @unique(map: "customers_password_customer_unique") @db.VarChar(100)
-  emergency_contact     String?           @db.VarChar(100)
-  official_identify     String?           @db.VarChar(255)
-  phone_number          String?           @db.VarChar(100)
-  country_customer      String?           @db.VarChar(100)
-  state_customer        String?           @db.VarChar(100)
-  address               String?           @db.Text
+  id                    Int                @id @default(autoincrement())
+  profile_picture       String?            @db.VarChar(255)
+  first_name            String             @db.VarChar(100)
+  middle_name           String?            @db.VarChar(100)
+  last_name             String?            @db.VarChar(100)
+  email_customer        String             @unique(map: "customers_email_customer_unique") @db.VarChar(100)
+  password_customer     String             @unique(map: "customers_password_customer_unique") @db.VarChar(100)
+  emergency_contact     String?            @db.VarChar(100)
+  official_identify     String?            @db.VarChar(255)
+  phone_number          String?            @db.VarChar(100)
+  country_customer      String?            @db.VarChar(100)
+  state_customer        String?            @db.VarChar(100)
+  address               String?            @db.Text
   driver_license_number Int?
-  driver_license_image  String?           @db.VarChar(255)
-  expiration_date       DateTime?         @db.Date
-  date_of_birth         DateTime?         @db.Date
-  status                String            @db.VarChar(100)
-  driver_status         Boolean           @default(false)
-  driver_goals          driver_goals?     @relation(fields: [driver_goals_id], references: [id])
-  driver_goals_id       Int?
-  car_availability      car_availability? @relation(fields: [car_availability_id], references: [id])
-  car_availability_id   Int?
-  delete_at             DateTime?         @db.Timestamp(0)
-  created_at            DateTime?         @db.Timestamp(0)
-  updated_at            DateTime?         @db.Timestamp(0)
+  driver_license_image  String?            @db.VarChar(255)
+  expiration_date       DateTime?          @db.Date
+  date_of_birth         DateTime?          @db.Date
+  status                String             @db.VarChar(100)
+  driver_status         Boolean            @default(false)
+  driver_goals          driver_goals[]
+  car_availability      car_availability[]
+  delete_at             DateTime?          @db.Timestamp(0)
+  created_at            DateTime?          @db.Timestamp(0)
+  updated_at            DateTime?          @db.Timestamp(0)
 }
 
 model car_availability {
@@ -74,7 +72,8 @@ model car_availability {
   how_often_car_id          Int
   createdAt                 DateTime               @default(now())
   updatedAt                 DateTime               @updatedAt
-  customers                 customers[]
+  customers                 customers              @relation(fields: [customer_id], references: [id])
+  customer_id               Int
 }
 
 model primary_financial_goal {
@@ -111,7 +110,8 @@ model driver_goals {
   maximum_duration_id Int
   createdAt           DateTime         @default(now())
   updatedAt           DateTime         @updatedAt
-  customer            customers[]
+  customers           customers        @relation(fields: [customer_id], references: [id])
+  customer_id         Int
 }
 
 model advance_goal {
