@@ -39,6 +39,7 @@ const client_1 = require("@prisma/client");
 const express_1 = __importStar(require("express"));
 const joi_1 = __importDefault(require("joi"));
 const fileUpload_1 = __importDefault(require("../../../utils/fileUpload"));
+const token_1 = require("../../../utils/token");
 const prisma = new client_1.PrismaClient();
 const router = (0, express_1.Router)();
 const app = (0, express_1.default)();
@@ -441,6 +442,37 @@ router.post("/goals-user", (req, res) => __awaiter(void 0, void 0, void 0, funct
             advance_goal_id: Number(advance_goal_id),
             minimum_duration_id: Number(minimum_duration_id),
             maximum_duration_id: Number(maximum_duration_id),
+        },
+    });
+}));
+//get user with jwt
+router.get("/user", token_1.accessValidation, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userData } = req;
+    const user = yield prisma.customers.findUnique({
+        where: {
+            id: Number(userData.id),
+        },
+    });
+    const image = process.env.PUBLIC_IMAGE;
+    res.json({
+        message: "User",
+        data: {
+            id: user.id,
+            profile_picture: `${image}/${user.profile_picture}`,
+            first_name: user.first_name,
+            middle_name: user.middle_name,
+            last_name: user.last_name,
+            email_customer: user.email_customer,
+            emergency_contact: user.emergency_contact,
+            official_identify: user.official_identify,
+            phone_number: user.phone_number,
+            country_customer: user.country_customer,
+            address: user.address,
+            driver_license_number: user.driver_license_number,
+            expiration_date: user.expiration_date,
+            date_of_birth: user.date_of_birth,
+            statusEmail: user.status,
+            statusDriver: user.driver_status,
         },
     });
 }));

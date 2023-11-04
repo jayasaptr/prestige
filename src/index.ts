@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 
 const app = express();
-const PORT = 80;
+const PORT = 5000;
 
 app.use(cors());
 

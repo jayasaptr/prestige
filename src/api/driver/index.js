@@ -115,4 +115,69 @@ router.get("/:page", (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(400).json({ message: error });
     }
 }));
+//detail user role customer data driver
+router.get("/detail/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { id } = req.params;
+    const driver = yield prisma.customers.findUnique({
+        where: {
+            id: Number(id),
+        },
+        select: {
+            id: true,
+            first_name: true,
+            middle_name: true,
+            last_name: true,
+            email_customer: true,
+            profile_picture: true,
+            created_at: true,
+            updated_at: true,
+            driver_license_image: true,
+            driver_license_number: true,
+            emergency_contact: true,
+            date_of_birth: true,
+            expiration_date: true,
+            phone_number: true,
+            address: true,
+            state_customer: true,
+            country_customer: true,
+            official_identify: true,
+            status: true,
+            driver_goals: {
+                select: {
+                    advance_goal_id: false,
+                    maximum_duration_id: false,
+                    minimum_duration_id: false,
+                    advance_goal: true,
+                    maximum_duration: true,
+                    minimum_duration: true,
+                },
+            },
+            car_availability: {
+                select: {
+                    primary_financial_goal_id: false,
+                    how_often_family_id: false,
+                    how_often_car_id: false,
+                    primary_financial_goal: true,
+                    how_often_family: true,
+                    how_often_car: true,
+                },
+            },
+        },
+    });
+    try {
+        const baseUrl = process.env.PUBLIC_IMAGE;
+        ((_a = driver.profile_picture) === null || _a === void 0 ? void 0 : _a.includes("https://lh3.googleusercontent.com/"))
+            ? null
+            : (driver.profile_picture = `${baseUrl}/${driver.profile_picture}`);
+        driver.driver_license_image = `${baseUrl}/${driver.driver_license_image}`;
+        res.status(200).json({
+            data: driver,
+        });
+    }
+    catch (error) {
+        res.status(400).json({ message: error });
+    }
+}));
+//update user role customer data driver
 module.exports = router;

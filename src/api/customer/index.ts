@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import express, { Router } from "express";
 import Joi from "joi";
 import fileUpload from "../../../utils/fileUpload";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { accessValidation } from "../../../utils/token";
 
 const prisma = new PrismaClient();
 const router = Router();
@@ -476,6 +478,41 @@ router.post("/goals-user", async (req, res) => {
       advance_goal_id: Number(advance_goal_id),
       minimum_duration_id: Number(minimum_duration_id),
       maximum_duration_id: Number(maximum_duration_id),
+    },
+  });
+});
+
+//get user with jwt
+router.get("/user", accessValidation, async (req, res) => {
+  const { userData } = req as any;
+
+  const user = await prisma.customers.findUnique({
+    where: {
+      id: Number(userData.id),
+    },
+  });
+
+  const image = process.env.PUBLIC_IMAGE;
+
+  res.json({
+    message: "User",
+    data: {
+      id: user!.id,
+      profile_picture: `${image}/${user!.profile_picture}`,
+      first_name: user!.first_name,
+      middle_name: user!.middle_name,
+      last_name: user!.last_name,
+      email_customer: user!.email_customer,
+      emergency_contact: user!.emergency_contact,
+      official_identify: user!.official_identify,
+      phone_number: user!.phone_number,
+      country_customer: user!.country_customer,
+      address: user!.address,
+      driver_license_number: user!.driver_license_number,
+      expiration_date: user!.expiration_date,
+      date_of_birth: user!.date_of_birth,
+      statusEmail: user!.status,
+      statusDriver: user!.driver_status,
     },
   });
 });

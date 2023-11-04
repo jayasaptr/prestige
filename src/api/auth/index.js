@@ -154,7 +154,8 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
             lastname: user.last_name,
             email: user.email_customer,
             photo: `${image}/${user.profile_picture}`,
-            isVerified: user.status,
+            statusEmail: user.status,
+            statusDriver: user.driver_status,
         };
         const secret = process.env.JWT_SECRET;
         const expiresIn = 60 * 60 * 1;
@@ -176,7 +177,8 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 driver_license_number: user.driver_license_number,
                 expiration_date: user.expiration_date,
                 date_of_birth: user.date_of_birth,
-                status: user.status,
+                statusEmail: user.status,
+                statusDriver: user.driver_status,
             },
             token: token,
         });
@@ -241,6 +243,7 @@ router.get("/google/callback", (req, res) => __awaiter(void 0, void 0, void 0, f
         email: user === null || user === void 0 ? void 0 : user.email_customer,
         photo: user === null || user === void 0 ? void 0 : user.profile_picture,
         status: user === null || user === void 0 ? void 0 : user.status,
+        statusDriver: user === null || user === void 0 ? void 0 : user.driver_status,
     };
     const secret = process.env.JWT_SECRET;
     const expiresIn = 60 * 60 * 1;

@@ -178,7 +178,8 @@ router.post("/login", async (req, res) => {
       lastname: user.last_name,
       email: user.email_customer,
       photo: `${image}/${user.profile_picture}`,
-      isVerified: user.status,
+      statusEmail: user.status,
+      statusDriver: user.driver_status,
     };
 
     const secret = process.env.JWT_SECRET!;
@@ -204,7 +205,8 @@ router.post("/login", async (req, res) => {
         driver_license_number: user.driver_license_number,
         expiration_date: user.expiration_date,
         date_of_birth: user.date_of_birth,
-        status: user.status,
+        statusEmail: user.status,
+        statusDriver: user.driver_status,
       },
       token: token,
     });
@@ -286,6 +288,7 @@ router.get("/google/callback", async (req, res) => {
     email: user?.email_customer,
     photo: user?.profile_picture,
     status: user?.status,
+    statusDriver: user?.driver_status,
   };
 
   const secret = process.env.JWT_SECRET!;
@@ -322,5 +325,6 @@ router.get("/google/callback", async (req, res) => {
     `https://fe-prestige.zenmultimediacorp.com/?token=${token}`
   );
 });
+
 
 module.exports = router;

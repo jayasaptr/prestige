@@ -8,7 +8,6 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const accessValidation = (req, res, next) => {
     const validationReq = req;
     const { authorization } = validationReq.headers;
-    console.log("here: ", authorization);
     if (!authorization) {
         return res.status(401).json({
             message: "Token diperlukan",
